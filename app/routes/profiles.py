@@ -57,6 +57,9 @@ def push_to_github():
         subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
+        # Überprüfen, ob Änderungen vorhanden sind
+        subprocess.run(["git", "status"], check=True)
+        
         # Remote hinzufügen oder aktualisieren
         remote_url = "https://github.com/Question86/Ray_pub.git"
         print(f"Remote URL: {remote_url}")
