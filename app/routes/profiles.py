@@ -55,8 +55,6 @@ def view_json():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
-import subprocess
-
 def push_to_github():
     """
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
