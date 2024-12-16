@@ -65,7 +65,8 @@ def push_to_github():
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
          # Remote-Repository hinzufügen
-        subprocess.run(["git", "remote", "add", "origin", "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
+        subprocess.run(["git", "remote", "add", "origin", 
+                        "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
 
         # Git-Befehle ausführen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
