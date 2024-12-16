@@ -55,3 +55,16 @@ def view_json():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
+def push_to_github():
+    """
+    Synchronisiert die aktualisierte JSON-Datei mit GitHub.
+    """
+    try:
+        # Git-Befehle ausführen
+        subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
+        subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Git-Fehler: {e}")
+
+
