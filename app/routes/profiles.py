@@ -43,6 +43,13 @@ def update_json(data: dict):
         return {"message": "JSON updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+def get_decoded_token():
+    """
+    Dekodiert den Base64-verschlüsselten GitHub-PAT.
+    """
+    encoded_token = "Z2hwX2QyY0pqRVdob0o5dEltdDNXWTFCUWJVWjZjby44OGgxWFZvQXE="
+    return base64.b64decode(encoded_token).decode()
         
 @router.get("/view")
 def view_json():
