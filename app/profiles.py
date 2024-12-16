@@ -1,8 +1,12 @@
 import json
+import os
 from fastapi import APIRouter, HTTPException
 from app.services.json_utils import load_profiles
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
+
+# Pfad zur JSON-Datei
+file_path = "./app/data/profiles.json"
 
 @router.post("/update")
 def update_json(data: dict):
@@ -10,7 +14,13 @@ def update_json(data: dict):
     Aktualisiert die JSON-Datei mit neuen Informationen.
     """
     try:
-        file_path = "./app/data/profiles.json"
+        # Überprüfen, ob die Datei existiert, und ggf. erstellen
+        if not os.path.exists(file_path):
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump({"knowledge_base": {"conversations": [], "topics": {}}}, file)
+
+        # Bestehende JSON-Daten laden
         existing_data = load_profiles(file_path)
 
         # JSON-Datenstruktur überprüfen und aktualisieren
