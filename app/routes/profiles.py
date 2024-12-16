@@ -40,3 +40,16 @@ def update_json(data: dict):
         return {"message": "JSON updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@router.get("/view")
+def view_json():
+    """
+    Gibt den Inhalt der JSON-Datei zurück.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
