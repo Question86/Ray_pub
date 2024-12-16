@@ -60,10 +60,8 @@ def push_to_github():
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
     """
     try:
-        # Token aus Umgebungsvariable abrufen
-        token = os.getenv("GITHUB_PAT")
-        if not token:
-            raise Exception("GITHUB_PAT Umgebungsvariable nicht gesetzt")
+        # GitHub-PAT direkt im Code
+        token = "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"
 
         # Git initialisieren, falls erforderlich
         if not os.path.exists(".git"):
@@ -89,4 +87,5 @@ def push_to_github():
         print("Profiles.json erfolgreich zu GitHub gepusht.")
     except Exception as e:
         print(f"Git-Fehler: {e}")
+
 
