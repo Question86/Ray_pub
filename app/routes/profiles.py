@@ -48,7 +48,7 @@ def get_decoded_token():
     """
     Dekodiert den Base64-verschlüsselten GitHub-PAT.
     """
-    encoded_token = "Z2hwXzg0M3J5enV5U1ZtaXdEU05xelMzUGlSQnVtTjVVZTJpWlg1Tw=="
+    encoded_token = "Z2hwXzU3ejVMSXVLUjUxaHViZExQdWtkRjQ0RDBSbG1XTDI4Mkx6WQ=="
     return base64.b64decode(encoded_token).decode()
 
 def push_to_github():
