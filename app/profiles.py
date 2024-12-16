@@ -2,13 +2,20 @@ import json
 import os
 from fastapi import APIRouter, HTTPException
 from app.services.json_utils import load_profiles
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
+class UpdateData(BaseModel):
+    conversation: dict
+    topic: str
+    content: str
+    
 # Pfad zur JSON-Datei
 file_path = "./app/data/profiles.json"
 
 @router.post("/update")
+def update_json(data: UpdateData):
 def update_json(data: dict):
     """
     Aktualisiert die JSON-Datei mit neuen Informationen.
