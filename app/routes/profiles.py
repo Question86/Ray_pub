@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import json
 import os
+import subprocess
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
@@ -22,9 +23,7 @@ def update_json(data: dict):
         with open(file_path, "r", encoding="utf-8") as file:
             existing_data = json.load(file)
 
-        # JSON-Datenstruktur überprüfen und aktualisieren
-        if "knowledge_base" not in existing_data:
-            existing_data["knowledge_base"] = {"conversations": [], "topics": {}}
+        # JSON-Daten aktualisieren
         if "conversation" in data:
             existing_data["knowledge_base"]["conversations"].append(data["conversation"])
         if "topic" in data:
@@ -33,14 +32,17 @@ def update_json(data: dict):
                 existing_data["knowledge_base"]["topics"][topic] = []
             existing_data["knowledge_base"]["topics"][topic].append(data["content"])
 
-        # Aktualisierte JSON-Daten speichern
+        # JSON-Daten speichern
         with open(file_path, "w", encoding="utf-8") as file:
             json.dump(existing_data, file, ensure_ascii=False, indent=4)
+
+        # Änderungen zu GitHub pushen
+        push_to_github()
 
         return {"message": "JSON updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
+        
 @router.get("/view")
 def view_json():
     """
