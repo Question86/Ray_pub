@@ -60,15 +60,15 @@ def push_to_github():
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
     """
     try:
+        # Überprüfen, ob ein Git-Repository existiert, und ggf. initialisieren
+        if not os.path.exists(".git"):
+            subprocess.run(["git", "init"], check=True)
+
         # Git-Konfiguration setzen
         subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
-        # Remote-Repository mit Token hinzufügen oder aktualisieren
-        subprocess.run(["git", "remote", "set-url", "origin",
-                        "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
-
-           # Prüfen, ob das Remote 'origin' existiert
+        # Prüfen, ob das Remote 'origin' existiert
         remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
         if "origin" not in remote_check.stdout:
             subprocess.run(["git", "remote", "add", "origin",
@@ -76,7 +76,7 @@ def push_to_github():
         else:
             subprocess.run(["git", "remote", "set-url", "origin",
                             "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
-            
+
         # Git-Befehle ausführen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
@@ -85,6 +85,6 @@ def push_to_github():
         print("Profiles.json erfolgreich zu GitHub gepusht.")
     except subprocess.CalledProcessError as e:
         print(f"Git-Fehler: {e}")
-        print(f"Git-Fehler: {e}")
+
 
 
