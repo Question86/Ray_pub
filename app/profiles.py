@@ -30,21 +30,16 @@ def update_json(data: dict):
         # Bestehende JSON-Daten laden
         existing_data = load_profiles(file_path)
 
-        # JSON-Datenstruktur überprüfen und aktualisieren
-        if isinstance(existing_data, list):
-            existing_data.append(data)
-        elif isinstance(existing_data, dict):
-            if "knowledge_base" not in existing_data:
-                existing_data["knowledge_base"] = {"conversations": [], "topics": {}}
-            if "conversation" in data:
-                existing_data["knowledge_base"]["conversations"].append(data["conversation"])
-            if "topic" in data:
-                topic = data["topic"]
-                if topic not in existing_data["knowledge_base"]["topics"]:
-                    existing_data["knowledge_base"]["topics"][topic] = []
-                existing_data["knowledge_base"]["topics"][topic].append(data["content"])
+      # Daten aktualisieren
+        if "conversation" in data:
+            existing_data["knowledge_base"]["conversations"].append(data["conversation"])
+        if "topic" in data:
+            topic = data["topic"]
+            if topic not in existing_data["knowledge_base"]["topics"]:
+                existing_data["knowledge_base"]["topics"][topic] = []
+            existing_data["knowledge_base"]["topics"][topic].append(data["content"])
 
-        # Aktualisierte JSON-Daten speichern
+        # JSON-Datei speichern
         with open(file_path, "w", encoding="utf-8") as file:
             json.dump(existing_data, file, ensure_ascii=False, indent=4)
 
