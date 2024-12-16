@@ -1,0 +1,21 @@
+name: Update Profiles
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - app/data/profiles.json
+
+jobs:
+  push_update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Update profiles.json
+        run: |
+          git config --global user.name "Question86"
+          git config --global user.email "Question86@protonmail.com"
+          git add app/data/profiles.json
+          git commit -m "Auto-update profiles.json"
+          git push origin main
