@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 import json
 import os
 import subprocess
-import base64
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
@@ -44,22 +43,11 @@ def update_json(data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
-def get_decoded_token():
-    """
-    Dekodiert den Base64-verschlüsselten GitHub-PAT.
-    """
-    encoded_token = "Z2hwXzU3ejVMSXVLUjUxaHViZExQdWtkRjQ0RDBSbG1XTDI4Mkx6WQ=="
-    return base64.b64decode(encoded_token).decode()
-
 def push_to_github():
     """
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
     """
     try:
-        # GitHub-PAT direkt im Code
-        token = get_decoded_token()
-        print(f"Decoded Token: {token}")
-
         # Git initialisieren, falls erforderlich
         if not os.path.exists(".git"):
             print("Git repository not initialized. Initializing...")
@@ -70,7 +58,7 @@ def push_to_github():
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
         # Remote hinzufügen oder aktualisieren
-        remote_url = f"https://Question86:{token}@github.com/Question86/Ray_pub.git"
+        remote_url = "https://github.com/Question86/Ray_pub.git"
         print(f"Remote URL: {remote_url}")
         remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
         if "origin" not in remote_check.stdout:
@@ -81,9 +69,8 @@ def push_to_github():
         # Änderungen committen und pushen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
-        subprocess.run(["git", "push", "origin", "main"], check=True)
 
-        print("Profiles.json erfolgreich zu GitHub gepusht.")
+        print("Skipping Git push in this version. Use GitHub Actions to manage updates.")
     except subprocess.CalledProcessError as e:
         print(f"Git push failed with return code {e.returncode} and output: {e.output}")
     except Exception as e:
