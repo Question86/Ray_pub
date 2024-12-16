@@ -1,48 +1,53 @@
 import json
+import os
 from fastapi import APIRouter, HTTPException
+from app.services.json_utils import load_profiles
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
 
-# Pydantic Modell zur Validierung der Daten
-class UpdateRequest(BaseModel):
+class UpdateData(BaseModel):
     conversation: dict
     topic: str
     content: str
+    
+# Pfad zur JSON-Datei
+file_path = "./app/data/profiles.json"
 
 @router.post("/update")
-def update_json(data: UpdateRequest):
+def update_json(data: UpdateData):
+def update_json(data: dict):
     """
     Aktualisiert die JSON-Datei mit neuen Informationen.
     """
     try:
-        file_path = "C:\\Users\\ambas\\Ray\\app\\data\\profiles.json"
-        
-        # JSON-Datei laden
-        with open(file_path, "r", encoding="utf-8") as file:
-            existing_data = json.load(file)
-        
-        # Wissenbasis aktualisieren
-        if "knowledge_base" not in existing_data:
-            existing_data["knowledge_base"] = {"conversations": [], "topics": {}}
+        # Überprüfen, ob die Datei existiert, und ggf. erstellen
+        if not os.path.exists(file_path):
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump({"knowledge_base": {"conversations": [], "topics": {}}}, file)
 
-        # Neue Konversation hinzufügen
-        if "conversations" in existing_data["knowledge_base"]:
-            existing_data["knowledge_base"]["conversations"].append(data.conversation)
-        
-        # Neues Thema hinzufügen oder erweitern
-        if "topics" in existing_data["knowledge_base"]:
-            if data.topic not in existing_data["knowledge_base"]["topics"]:
-                existing_data["knowledge_base"]["topics"][data.topic] = []
-            existing_data["knowledge_base"]["topics"][data.topic].append(data.content)
-        
-        # Änderungen in die JSON-Datei schreiben
+        # Bestehende JSON-Daten laden
+        existing_data = load_profiles(file_path)
+
+        # JSON-Datenstruktur überprüfen und aktualisieren
+        if isinstance(existing_data, list):
+            existing_data.append(data)
+        elif isinstance(existing_data, dict):
+            if "knowledge_base" not in existing_data:
+                existing_data["knowledge_base"] = {"conversations": [], "topics": {}}
+            if "conversation" in data:
+                existing_data["knowledge_base"]["conversations"].append(data["conversation"])
+            if "topic" in data:
+                topic = data["topic"]
+                if topic not in existing_data["knowledge_base"]["topics"]:
+                    existing_data["knowledge_base"]["topics"][topic] = []
+                existing_data["knowledge_base"]["topics"][topic].append(data["content"])
+
+        # Aktualisierte JSON-Daten speichern
         with open(file_path, "w", encoding="utf-8") as file:
             json.dump(existing_data, file, ensure_ascii=False, indent=4)
 
         return {"message": "JSON updated successfully"}
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="JSON file not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-
