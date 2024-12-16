@@ -61,17 +61,18 @@ def push_to_github():
     """
     try:
         # Git-Konfiguration setzen
-        subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
-        subprocess.run(["git", "config", "user.name", "Question86"], check=True)
+        subprocess.run(["git", "config", "user.email", "you@example.com"], check=True)
+        subprocess.run(["git", "config", "user.name", "Your Name"], check=True)
 
-         # Remote-Repository hinzufügen
-        subprocess.run(["git", "remote", "add", "origin", 
-                        "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
+        # Remote-Repository mit Token hinzufügen oder aktualisieren
+        subprocess.run(["git", "remote", "set-url", "origin",
+                        "https://Question86:ghp_abcd1234efgh5678ijkl9012mnop3456qrst7890@github.com/Question86/Ray_pub.git"], check=True)
 
         # Git-Befehle ausführen
-        subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
+        subprocess.run(["git", "add", file_path], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
         subprocess.run(["git", "push", "origin", "main"], check=True)
+
         print("Profiles.json erfolgreich zu GitHub gepusht.")
     except subprocess.CalledProcessError as e:
         print(f"Git-Fehler: {e}")
