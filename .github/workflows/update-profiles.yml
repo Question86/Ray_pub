@@ -1,7 +1,6 @@
 name: Update Profiles
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - app/data/profiles.json
@@ -12,10 +11,12 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      - name: Update profiles.json
+      - name: Configure Git
         run: |
           git config --global user.name "Question86"
           git config --global user.email "Question86@protonmail.com"
+      - name: Commit and Push Changes
+        run: |
           git add app/data/profiles.json
-          git commit -m "Auto-update profiles.json"
-          git push origin main
+          git commit -m "Auto-update profiles.json" || echo "No changes to commit"
+          git push
