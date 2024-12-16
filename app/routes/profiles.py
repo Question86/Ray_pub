@@ -63,8 +63,8 @@ def push_to_github():
     """
     try:
         # Git-Konfiguration setzen
-        subprocess.run(["git", "config", "user.email", "you@example.com"], check=True)
-        subprocess.run(["git", "config", "user.name", "Your Name"], check=True)
+        subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
+        subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
         # Git-Befehle ausführen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
