@@ -34,10 +34,7 @@
                 "timestamp": "2024-12-14 17:00:00",
                 "content": "Hier ist ein neuer Gedanke, der während des Gesprächs aufkam."
             },
-            {
-                "timestamp": "2024-12-14 21:30:00",
-                "content": "Ich bin 192 cm groß."
-            }
+
         ],
         "topics": {
             "KI": [
