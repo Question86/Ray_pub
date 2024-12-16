@@ -48,28 +48,9 @@ def get_decoded_token():
     """
     Dekodiert den Base64-verschlüsselten GitHub-PAT.
     """
-    encoded_token = "Z2hwX2QyY0pqRVdob0o5dEltdDNXWTFCUWJVWjZjby44OGgxWFZvQXE="
+    encoded_token = "Z2hwXzg0M3J5enV5U1ZtaXdEU05xelMzUGlSQnVtTjVVZTJpWlg1Tw=="
     return base64.b64decode(encoded_token).decode()
-        
-@router.get("/view")
-def view_json():
-    """
-    Gibt den Inhalt der JSON-Datei zurück.
-    """
-    try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        return data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
-def get_decoded_token():
-    """
-    Dekodiert den Base64-verschlüsselten GitHub-PAT.
-    """
-    encoded_token = "Z2hwX2QyY0pqRVdob0o5dEltdDNXWTFCUWJVWjZjby44OGgxWFZvQXE="
-    return base64.b64decode(encoded_token).decode()
-    
 def push_to_github():
     """
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
@@ -77,9 +58,11 @@ def push_to_github():
     try:
         # GitHub-PAT direkt im Code
         token = get_decoded_token()
+        print(f"Decoded Token: {token}")
 
         # Git initialisieren, falls erforderlich
         if not os.path.exists(".git"):
+            print("Git repository not initialized. Initializing...")
             subprocess.run(["git", "init"], check=True)
 
         # Git-Konfiguration setzen
@@ -88,6 +71,7 @@ def push_to_github():
 
         # Remote hinzufügen oder aktualisieren
         remote_url = f"https://Question86:{token}@github.com/Question86/Ray_pub.git"
+        print(f"Remote URL: {remote_url}")
         remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
         if "origin" not in remote_check.stdout:
             subprocess.run(["git", "remote", "add", "origin", remote_url], check=True)
@@ -100,7 +84,19 @@ def push_to_github():
         subprocess.run(["git", "push", "origin", "main"], check=True)
 
         print("Profiles.json erfolgreich zu GitHub gepusht.")
+    except subprocess.CalledProcessError as e:
+        print(f"Git push failed with return code {e.returncode} and output: {e.output}")
     except Exception as e:
         print(f"Git-Fehler: {e}")
 
-
+@router.get("/view")
+def view_json():
+    """
+    Gibt den Inhalt der JSON-Datei zurück.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
