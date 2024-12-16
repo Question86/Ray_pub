@@ -10,7 +10,7 @@ def update_json(data: dict):
     Aktualisiert die JSON-Datei mit neuen Informationen.
     """
     try:
-        file_path = "C:\\Users\\ambas\\Ray\\app\\data\\profiles.json"
+        file_path = "./app/data/profiles.json"
         existing_data = load_profiles(file_path)
 
         # JSON-Datenstruktur überprüfen und aktualisieren
