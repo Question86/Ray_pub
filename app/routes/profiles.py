@@ -60,7 +60,12 @@ def push_to_github():
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
     """
     try:
-        # Überprüfen, ob ein Git-Repository existiert, und ggf. initialisieren
+        # Token aus Umgebungsvariable abrufen
+        token = os.getenv("GITHUB_PAT")
+        if not token:
+            raise Exception("GITHUB_PAT Umgebungsvariable nicht gesetzt")
+
+        # Git initialisieren, falls erforderlich
         if not os.path.exists(".git"):
             subprocess.run(["git", "init"], check=True)
 
@@ -68,23 +73,21 @@ def push_to_github():
         subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
-        # Prüfen, ob das Remote 'origin' existiert
+        # Remote hinzufügen oder aktualisieren
+        remote_url = f"https://Question86:{token}@github.com/Question86/Ray_pub.git"
         remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
         if "origin" not in remote_check.stdout:
-            subprocess.run(["git", "remote", "add", "origin",
-                            "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
+            subprocess.run(["git", "remote", "add", "origin", remote_url], check=True)
         else:
-            subprocess.run(["git", "remote", "set-url", "origin",
-                            "https://Question86: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@github.com/Question86/Ray_pub.git"], check=True)
+            subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
 
-        # Git-Befehle ausführen
+        # Änderungen committen und pushen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
         subprocess.run(["git", "push", "origin", "main"], check=True)
 
         print("Profiles.json erfolgreich zu GitHub gepusht.")
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
         print(f"Git-Fehler: {e}")
-
 
 
