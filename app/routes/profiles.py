@@ -90,4 +90,3 @@ def push_to_github():
     except Exception as e:
         print(f"Git-Fehler: {e}")
 
-
