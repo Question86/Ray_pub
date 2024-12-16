@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+ofrom fastapi import APIRouter, HTTPException
 import json
 import os
 import subprocess
@@ -61,8 +61,17 @@ def push_to_github():
     """
     try:
         # Git-Konfiguration setzen
-        subprocess.run(["git", "config", "user.email", "you@example.com"], check=True)
-        subprocess.run(["git", "config", "user.name", "Your Name"], check=True)
+        subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
+        subprocess.run(["git", "config", "user.name", "Question86"], check=True)
+
+        # Prüfen, ob das Remote 'origin' existiert
+        remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
+        if "origin" not in remote_check.stdout:
+            subprocess.run(["git", "remote", "add", "origin",
+                            "https://Question86:ghp_abcd1234efgh5678ijkl9012mnop3456qrst7890@github.com/Question86/Ray_pub.git"], check=True)
+        else:
+            subprocess.run(["git", "remote", "set-url", "origin",
+                            "https://Question86:ghp_abcd1234efgh5678ijkl9012mnop3456qrst7890@github.com/Question86/Ray_pub.git"], check=True)
 
         # Remote-Repository mit Token hinzufügen oder aktualisieren
         subprocess.run(["git", "remote", "set-url", "origin",
