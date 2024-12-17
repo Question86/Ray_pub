@@ -1,6 +1,6 @@
 {
     "knowledge_base": {
         "conversations": [],
-        "topics": {}
+        "topics": {test}
     }
 }
