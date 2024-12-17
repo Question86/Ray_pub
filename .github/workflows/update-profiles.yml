@@ -12,13 +12,30 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GH_PAT }} # Verwende den PAT als Authentifizierung
+          token: ${{ secrets.GH_PAT }} # Verwende den PAT für Authentifizierung
+
       - name: Configure Git
         run: |
           git config --global user.name "Question86"
           git config --global user.email "Question86@protonmail.com"
-      - name: Commit and Push Changes
+
+      - name: Debug File Content
         run: |
+          echo "Before commit:"
+          cat app/data/profiles.json
+
+      - name: Force Update profiles.json
+        run: |
+          echo "Forcing file update"
+          touch app/data/profiles.json
           git add app/data/profiles.json
-          git commit -m "Auto-update profiles.json" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/Question86/Ray_pub.git
+          git commit -m "Force update profiles.json" || echo "No changes to commit"
+
+      - name: Debug Git Status
+        run: |
+          git status
+          git log -1
+
+      - name: Push Changes
+        run: |
+          git push origin main --force
