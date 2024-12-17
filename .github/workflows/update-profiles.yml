@@ -24,16 +24,18 @@ jobs:
           echo "Before commit:"
           cat app/data/profiles.json
 
+      - name: Pull Latest Changes
+        run: |
+          echo "Pulling latest changes from remote"
+          git fetch origin main
+          git pull origin main --rebase
+
       - name: Force Update profiles.json
         run: |
           echo "Forcing file update"
           touch app/data/profiles.json
           git add app/data/profiles.json
           git commit -m "Force update profiles.json" || echo "No changes to commit"
-
-      - name: Pull Latest Changes
-        run: |
-          git pull origin main --rebase
 
       - name: Debug Git Status
         run: |
@@ -42,4 +44,5 @@ jobs:
 
       - name: Push Changes
         run: |
+          echo "Pushing changes to remote"
           git push origin main --force
