@@ -1,0 +1,30 @@
+name: Update Profiles
+
+on:
+  push:
+    paths:
+      - app/data/profiles.json
+
+jobs:
+  push_update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Holt die gesamte Git-Historie, um Konflikte zu vermeiden.
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Question86"
+          git config --global user.email "Question86@protonmail.com"
+
+      - name: Pull Latest Changes
+        run: |
+          git pull origin main --rebase
+
+      - name: Commit and Push Changes
+        run: |
+          git add app/data/profiles.json
+          git commit -m "Auto-update profiles.json" || echo "No changes to commit"
+          git push origin main --force
