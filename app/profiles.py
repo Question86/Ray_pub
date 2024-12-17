@@ -13,6 +13,9 @@ def update_json(data: dict):
     Aktualisiert die JSON-Datei mit neuen Informationen.
     """
     try:
+        # Debug-Ausdruck, um den empfangenen Body zu sehen
+        print(f"Received data: {data}")
+
         # Überprüfen, ob die Datei existiert, und ggf. erstellen
         if not os.path.exists(file_path):
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -69,9 +72,8 @@ def push_to_github():
         # Änderungen committen und pushen
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
-        subprocess.run(["git", "push", "origin", "main"], check=True)
 
-        print("Profiles.json erfolgreich zu GitHub gepusht.")
+        print("Skipping Git push in this version. Use GitHub Actions to manage updates.")
     except subprocess.CalledProcessError as e:
         print(f"Git push failed with return code {e.returncode} and output: {e.output}")
     except Exception as e:
