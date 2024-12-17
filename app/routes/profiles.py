@@ -48,6 +48,12 @@ def push_to_github():
     Synchronisiert die aktualisierte JSON-Datei mit GitHub.
     """
     try:
+        # Setze Berechtigungen für den privaten Schlüssel
+        os.chmod("render_deploy_key", 0o600)
+
+        # Setze GIT_SSH_COMMAND, um den SSH-Schlüssel zu verwenden
+        os.environ["GIT_SSH_COMMAND"] = "ssh -i render_deploy_key -o StrictHostKeyChecking=no"
+
         # Git initialisieren, falls erforderlich
         if not os.path.exists(".git"):
             print("Git repository not initialized. Initializing...")
@@ -57,11 +63,8 @@ def push_to_github():
         subprocess.run(["git", "config", "user.email", "Question86@protonmail.com"], check=True)
         subprocess.run(["git", "config", "user.name", "Question86"], check=True)
 
-        # Überprüfen, ob Änderungen vorhanden sind
-        subprocess.run(["git", "status"], check=True)
-        
         # Remote hinzufügen oder aktualisieren
-        remote_url = "https://github.com/Question86/Ray_pub.git"
+        remote_url = "git@github.com:Question86/Ray_pub.git"
         print(f"Remote URL: {remote_url}")
         remote_check = subprocess.run(["git", "remote"], capture_output=True, text=True)
         if "origin" not in remote_check.stdout:
@@ -69,15 +72,16 @@ def push_to_github():
         else:
             subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
 
-        # Änderungen committen und pushen
+        # Git push ausführen mit SSH-Schlüssel
         subprocess.run(["git", "add", "app/data/profiles.json"], check=True)
         subprocess.run(["git", "commit", "-m", "Auto-update profiles.json"], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
 
-        print("Skipping Git push in this version. Use GitHub Actions to manage updates.")
+        print("Änderungen erfolgreich zu GitHub gepusht!")
     except subprocess.CalledProcessError as e:
         print(f"Git push failed with return code {e.returncode} and output: {e.output}")
     except Exception as e:
-        print(f"Git-Fehler: {e}")
+        print(f"Fehler beim Pushen: {e}")
 
 @router.get("/view")
 def view_json():
@@ -90,3 +94,4 @@ def view_json():
         return data
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
