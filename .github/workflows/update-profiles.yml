@@ -12,37 +12,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GH_PAT }} # Verwende den PAT für Authentifizierung
+          fetch-depth: 0  # Holt die gesamte Historie
 
       - name: Configure Git
         run: |
           git config --global user.name "Question86"
           git config --global user.email "Question86@protonmail.com"
 
-      - name: Debug File Content
-        run: |
-          echo "Before commit:"
-          cat app/data/profiles.json
-
       - name: Pull Latest Changes
         run: |
-          echo "Pulling latest changes from remote"
-          git fetch origin main
           git pull origin main --rebase
 
-      - name: Force Update profiles.json
+      - name: Commit and Push Changes
         run: |
-          echo "Forcing file update"
-          touch app/data/profiles.json
           git add app/data/profiles.json
-          git commit -m "Force update profiles.json" || echo "No changes to commit"
-
-      - name: Debug Git Status
-        run: |
-          git status
-          git log -1
-
-      - name: Push Changes
-        run: |
-          echo "Pushing changes to remote"
+          git commit -m "Auto-update profiles.json" || echo "No changes to commit"
           git push origin main --force
